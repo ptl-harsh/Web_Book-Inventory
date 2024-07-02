@@ -1,0 +1,100 @@
+<%- include("partials/header.ejs") %>
+<div class="prettyColor">
+  <div class="container">
+    <div class="submit-form" >
+      <h1>ADD A NEW BOOK</h1>
+      <form action="/add" method="POST" class="flex-container-column" style="margin-top:40px">
+        <div class="labelAndInput">
+          <label for="title">TITLE</label>
+          <input type="text" name="title" value="" placeholder="Hunger Games" autocomplete="off"/>
+        </div>
+        <div class="labelAndInput">
+          <label for="description">DESCRIPTION</label>
+          <input type="text" name="description" value="" placeholder="However you want to describe the book" autocomplete="off"/>
+        </div>
+        <div class="flex-container-noHeight">
+          <div class="labelAndInput">
+            <label for="isbn">ISBN</label>
+            <input type="text" name="isbn" value="" placeholder="0439023483" autocomplete="off"/>
+          </div>
+          <div class="labelAndInput">
+            <label for="rating">RATING</label>
+            <input type="text" name="rating" value="" placeholder="0..10" autocomplete="off"/>
+          </div>
+            <button type="submit" style="margin-top:15px" class="submit-button">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form action="/sort" method="post">
+    <div class="sortBy">
+        <label for="sort">SORT BY:</label>
+      <select name="sort">
+        <option value="id">Recency</option>
+        <option value="rating">Rating</option>
+        </select>
+    </div>
+    <button type="submit" class="sortBy-button">Sort</button>
+  </form>
+</div>
+
+<div class="container">
+  <ul>
+    <% books.forEach(book => { %>
+      <li>
+        <div class="item-flex-container item-border">
+
+          <div class="item-flex-container-column">
+            <img src="https://covers.openlibrary.org/b/isbn/<%= book.isbn %>-L.jpg" alt="Book Cover" />
+          </div>
+          <div class="item-flex-container-column">
+            <div class="item-flex-container">
+              <strong>TITLE:</strong> <%= book.title %>
+            </div>
+            <div class="item-flex-container">
+              <strong>ISBN:</strong> <%= book.isbn %>
+            </div>
+            <strong>DESCRIPTION:</strong><%= book.description %> 
+            <div id="description<%=book.id%>" class="item-flex-container"><strong>RATING:</strong> <%= parseInt(book.rating) %> / 10<br></div>
+            
+            <div class="item-flex-container">
+              
+              <div class="small-screen-delete-edit-buttons">
+                <form action="/edit" method="POST">
+                  <input type="hidden" name="updated_book_id" value="<%= book.id %>">
+                  <input id="input<%= book.id %>" type="text" name="updated_item_description" value="<%= book.description %>" autofocus="true" hidden="true"/>
+                  <button class="edit-button" id="done<%=book.id%>" type="submit" hidden>CONFIRM</button>
+                </form>
+              
+                <form action ="/delete" method="POST">
+                  <button id="delete<%=book.id%>"class="delete-button" type="submit" name="book_id" value="<%=book.id %>">DELETE</button>
+                </form>
+                
+                <button class="edit-button" id="edit<%=book.id%>" onclick="handler('<%=book.id%>')">EDIT</button>
+              </div>
+              
+            </div>
+          </div>
+        
+        </div>
+      </li>
+    <% }) %>
+  </ul>
+</div>
+
+<h5 align="right"><a href ="https://openlibrary.org" > API: Open Library Covers</a></h5>
+
+<script>        
+  function handler(id) {
+  document.getElementById("description" + id).setAttribute("hidden", true);
+  document.getElementById("edit" + id).setAttribute("hidden", true);
+  document.getElementById("delete" + id).setAttribute("hidden", true);
+  document.getElementById("done" + id).removeAttribute("hidden");
+  document.getElementById("input" + id).removeAttribute("hidden");
+  }
+</script>
+
+<%- include("partials/footer.ejs") %>
